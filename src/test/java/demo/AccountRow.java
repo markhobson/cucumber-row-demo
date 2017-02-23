@@ -3,6 +3,7 @@ package demo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.hamcrest.Matcher;
 
@@ -51,8 +52,8 @@ public class AccountRow {
 	public Account toModel() {
 		return new Account(
 			name,
-			type != null ? type : CURRENT,
-			balance != null ? balance : ZERO
+			Optional.ofNullable(type).orElse(CURRENT),
+			Optional.ofNullable(balance).orElse(ZERO)
 		);
 	}
 	
