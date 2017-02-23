@@ -1,16 +1,26 @@
 package demo;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hamcrest.Matcher;
+
+import demo.Account.AccountType;
+
+import static java.math.BigDecimal.ZERO;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 
+import static demo.Account.AccountType.CURRENT;
+
 public class AccountRow {
 	
 	private String name;
+	
+	private AccountType type;
 	
 	private BigDecimal balance;
 	
@@ -22,6 +32,14 @@ public class AccountRow {
 		this.name = name;
 	}
 	
+	public AccountType getType() {
+		return type;
+	}
+	
+	public void setType(AccountType type) {
+		this.type = type;
+	}
+	
 	public BigDecimal getBalance() {
 		return balance;
 	}
@@ -31,13 +49,28 @@ public class AccountRow {
 	}
 	
 	public Account toModel() {
-		return new Account(name, balance);
+		return new Account(
+			name,
+			type != null ? type : CURRENT,
+			balance != null ? balance : ZERO
+		);
 	}
 	
 	public Matcher<Account> toMatcher() {
-		return allOf(
-			hasProperty("name", equalTo(name)),
-			hasProperty("balance", equalTo(balance))
-		);
+		List<Matcher<? super Account>> matchers = new ArrayList<>();
+		
+		if (name != null) {
+			matchers.add(hasProperty("name", equalTo(name)));
+		}
+		
+		if (type != null) {
+			matchers.add(hasProperty("type", equalTo(type)));
+		}
+		
+		if (balance != null) {
+			matchers.add(hasProperty("balance", equalTo(balance)));
+		}
+		
+		return allOf(matchers);
 	}
 }
