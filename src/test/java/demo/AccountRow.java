@@ -51,7 +51,7 @@ public class AccountRow {
 	
 	public Account toModel() {
 		return new Account(
-			name,
+			Optional.ofNullable(name).orElse("Unnamed"),
 			Optional.ofNullable(type).orElse(CURRENT),
 			Optional.ofNullable(balance).orElse(ZERO)
 		);
