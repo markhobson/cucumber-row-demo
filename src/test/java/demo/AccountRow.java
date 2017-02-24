@@ -1,15 +1,15 @@
 package demo;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.hamcrest.Matcher;
 
 import demo.Account.AccountType;
 
 import static java.math.BigDecimal.ZERO;
+import static java.util.stream.Collectors.toList;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
@@ -58,20 +58,15 @@ public class AccountRow {
 	}
 	
 	public Matcher<Account> toMatcher() {
-		List<Matcher<? super Account>> matchers = new ArrayList<>();
-		
-		if (name != null) {
-			matchers.add(hasProperty("name", equalTo(name)));
-		}
-		
-		if (type != null) {
-			matchers.add(hasProperty("type", equalTo(type)));
-		}
-		
-		if (balance != null) {
-			matchers.add(hasProperty("balance", equalTo(balance)));
-		}
-		
-		return allOf(matchers);
+		return allOf(
+			Stream.of(
+				Optional.ofNullable(name).map(value -> hasProperty("name", equalTo(value))),
+				Optional.ofNullable(type).map(value -> hasProperty("type", equalTo(value))),
+				Optional.ofNullable(balance).map(value -> hasProperty("balance", equalTo(value)))
+			)
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.collect(toList())
+		);
 	}
 }
