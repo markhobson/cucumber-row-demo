@@ -15,19 +15,19 @@ public class AccountSteps implements En {
 	public AccountSteps() {
 		bank = new Bank();
 		
-		Given("^the system has no accounts$", () -> {
-			bank.removeAllAccounts();
-		});
+		Given("^the system has no accounts$", bank::removeAllAccounts);
 		
 		When("^the user adds the following accounts$", (DataTable accounts) -> {
 			accounts.asList(AccountRow.class)
-				.forEach(row -> bank.addAccount(row.toModel()));
+				.stream()
+				.map(AccountRow::toModel)
+				.forEach(bank::addAccount);
 		});
 		
 		Then("^the system has the following accounts$", (DataTable accounts) -> {
 			assertThat(bank.getAccounts(), containsInAnyOrder(accounts.asList(AccountRow.class)
 				.stream()
-				.map(row -> row.toMatcher())
+				.map(AccountRow::toMatcher)
 				.collect(toList())
 			));
 		});
