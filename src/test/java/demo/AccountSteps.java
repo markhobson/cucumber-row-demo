@@ -1,5 +1,7 @@
 package demo;
 
+import java.time.Clock;
+
 import cucumber.api.DataTable;
 import cucumber.api.java8.En;
 
@@ -13,13 +15,14 @@ public class AccountSteps implements En {
 	private final Bank bank;
 	
 	public AccountSteps() {
-		bank = new Bank();
+		bank = new Bank(Clock.systemUTC());
 		
 		Given("^the system has no accounts$", bank::removeAllAccounts);
 		
 		When("^the user adds the following accounts$", (DataTable accounts) -> {
 			accounts.asList(AccountRow.class)
 				.stream()
+				.map(AccountRow::evaluate)
 				.map(AccountRow::toModel)
 				.forEach(bank::addAccount);
 		});
@@ -27,6 +30,7 @@ public class AccountSteps implements En {
 		Then("^the system has the following accounts$", (DataTable accounts) -> {
 			assertThat(bank.getAccounts(), containsInAnyOrder(accounts.asList(AccountRow.class)
 				.stream()
+				.map(AccountRow::evaluate)
 				.map(AccountRow::toMatcher)
 				.collect(toList())
 			));

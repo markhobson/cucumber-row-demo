@@ -23,3 +23,12 @@ Feature: Accounts
       | Name       | Type    |
       | Chip Smith | CURRENT |
       | Randy Horn | SAVINGS |
+
+  Scenario: Accounts have an opened date
+    Given the system has no accounts
+    When the user adds the following accounts
+      | Name       |
+      | Chip Smith |
+    Then the system has the following accounts
+      | Name       | Opened  |
+      | Chip Smith | [today] |

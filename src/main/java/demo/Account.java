@@ -1,6 +1,7 @@
 package demo;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -17,10 +18,13 @@ public class Account {
 	
 	private final BigDecimal balance;
 	
-	public Account(String name, AccountType type, BigDecimal balance) {
+	private final LocalDate opened;
+	
+	public Account(String name, AccountType type, BigDecimal balance, LocalDate opened) {
 		this.name = requireNonNull(name);
 		this.type = requireNonNull(type);
 		this.balance = requireNonNull(balance);
+		this.opened = requireNonNull(opened);
 	}
 	
 	public String getName() {
@@ -35,8 +39,13 @@ public class Account {
 		return balance;
 	}
 	
+	public LocalDate getOpened() {
+		return opened;
+	}
+	
 	@Override
 	public String toString() {
-		return String.format("%s[name=%s, type=%s, balance=%s]", getClass().getName(), name, type, balance);
+		return String.format("%s[name=%s, type=%s, balance=%s, opened=%s]", getClass().getName(), name, type, balance,
+			opened);
 	}
 }
