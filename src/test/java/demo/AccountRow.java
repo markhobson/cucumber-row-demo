@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 
 import static demo.Account.AccountType.CURRENT;
+import static demo.Expressions.evaluateMatcher;
 import static demo.Expressions.evaluateValue;
 
 public class AccountRow {
@@ -86,7 +87,9 @@ public class AccountRow {
 				Optional.ofNullable(name).map(value -> hasProperty("name", equalTo(value))),
 				Optional.ofNullable(type).map(value -> hasProperty("type", equalTo(value))),
 				Optional.ofNullable(balance).map(value -> hasProperty("balance", equalTo(value))),
-				Optional.ofNullable(opened).map(value -> hasProperty("opened", equalTo(LocalDate.parse(value))))
+				Optional.ofNullable(opened).map(value -> hasProperty("opened",
+					evaluateMatcher(value).orElseGet(() -> equalTo(LocalDate.parse(value)))
+				))
 			)
 			.filter(Optional::isPresent)
 			.map(Optional::get)
