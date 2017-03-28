@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.hamcrest.Matcher;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.number.OrderingComparison.lessThan;
 
 public final class Expressions {
@@ -19,8 +20,20 @@ public final class Expressions {
 			.orElse(null);
 	}
 	
+	public static String evaluateNullValue(String expression) {
+		return "[null]".equals(expression) ? null : expression;
+	}
+	
 	public static Optional<Matcher<?>> evaluateMatcher(String expression) {
-		return Optional.ofNullable(expression)
-			.map(value -> "[past]".equals(value) ? lessThan(LocalDate.now()) : null);
+		Matcher<?> matcher = null;
+
+		if ("[null]".equals(expression)) {
+			matcher = nullValue();
+		}
+		else if ("[past]".equals(expression)) {
+			matcher = lessThan(LocalDate.now());
+		}
+
+		return Optional.ofNullable(matcher);
 	}
 }

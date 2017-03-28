@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.hasProperty;
 
 import static demo.Account.AccountType.CURRENT;
 import static demo.Expressions.evaluateMatcher;
+import static demo.Expressions.evaluateNullValue;
 import static demo.Expressions.evaluateValue;
 
 public class AccountRow {
@@ -74,7 +75,7 @@ public class AccountRow {
 	
 	public Account toModel() {
 		return new Account(
-			Optional.ofNullable(name).orElse("Unnamed"),
+			evaluateNullValue(Optional.ofNullable(name).orElse("Unnamed")),
 			Optional.ofNullable(type).orElse(CURRENT),
 			Optional.ofNullable(balance).orElse(ZERO),
 			Optional.ofNullable(opened).map(LocalDate::parse).orElse(MIN)
